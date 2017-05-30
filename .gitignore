@@ -81,6 +81,9 @@ distribute/*
 python/caffe/proto/
 cmake_build
 .cmake_build
+build-7.5
+build-8.0
+build-janus-tne-libs
 
 # Generated documentation
 docs/_site

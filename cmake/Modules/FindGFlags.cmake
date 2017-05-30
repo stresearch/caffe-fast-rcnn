@@ -19,7 +19,7 @@ if(WIN32)
         PATHS ${GFLAGS_ROOT_DIR}/src/windows)
 else()
     find_path(GFLAGS_INCLUDE_DIR gflags/gflags.h
-        PATHS ${GFLAGS_ROOT_DIR})
+        PATHS ${GFLAGS_ROOT_DIR} ${GFLAGS_ROOT_DIR}/include )
 endif()
 
 if(MSVC)
@@ -35,7 +35,7 @@ if(MSVC)
 
     set(GFLAGS_LIBRARY optimized ${GFLAGS_LIBRARY_RELEASE} debug ${GFLAGS_LIBRARY_DEBUG})
 else()
-    find_library(GFLAGS_LIBRARY gflags)
+    find_library(GFLAGS_LIBRARY gflags PATHS ${GFLAGS_ROOT_DIR} ${GFLAGS_ROOT_DIR}/lib )
 endif()
 
 find_package_handle_standard_args(GFlags DEFAULT_MSG GFLAGS_INCLUDE_DIR GFLAGS_LIBRARY)
