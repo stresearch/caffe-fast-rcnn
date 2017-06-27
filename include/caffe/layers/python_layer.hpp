@@ -26,7 +26,8 @@ class PythonLayer : public Layer<Dtype> {
     }
     self_.attr("param_str_") = bp::str(
         this->layer_param_.python_param().param_str());
-    self_.attr("phase") = static_cast<int>(this->phase_);
+    // See: https://github.com/rbgirshick/py-faster-rcnn/issues/249
+    // self_.attr("phase") = static_cast<int>(this->phase_);
     self_.attr("setup")(bottom, top);
   }
   virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
