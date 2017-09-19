@@ -14,8 +14,11 @@ set(CAFFE_TARGET_VERSION "1.0.0" CACHE STRING "Caffe logical version")
 set(CAFFE_TARGET_SOVERSION "1.0.0" CACHE STRING "Caffe soname version")
 add_definitions(-DCAFFE_VERSION=${CAFFE_TARGET_VERSION})
 
+set(JANUS_TNE ${PROJECT_SOURCE_DIR}/../janus-tne/janus/src/cmake)
 # ---[ Using cmake scripts and modules
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
+
+set(JANUS_OPENCV_PATH $ENV{JANUS_OPENCV_PATH})
 
 include(ExternalProject)
 include(GNUInstallDirs)
@@ -50,6 +53,10 @@ if(UNIX OR APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
 endif()
 
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
+endif()
+
 caffe_set_caffe_link()
 
 if(USE_libstdcpp)
@@ -66,7 +73,9 @@ configure_file(cmake/Templates/caffe_config.h.in "${PROJECT_BINARY_DIR}/caffe_co
 # ---[ Includes
 set(Caffe_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(Caffe_SRC_DIR ${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_BINARY_DIR})
+# taa: Because we're sometimes picking up OpenCV from the janus-tne directory,
+# make sure our directories are ahead of janus-tne/include.
+include_directories(${PROJECT_BINARY_DIR} BEFORE)
 
 # ---[ Includes & defines for CUDA
 
@@ -86,6 +95,7 @@ if(HAVE_CUDA)
   list(APPEND CUDA_NVCC_FLAGS ${Caffe_ALL_DEFINITIONS})
 endif()
 
+
 # ---[ Subdirectories
 add_subdirectory(src/gtest)
 add_subdirectory(src/caffe)
@@ -94,6 +104,8 @@ add_subdirectory(examples)
 add_subdirectory(python)
 add_subdirectory(matlab)
 add_subdirectory(docs)
+
+
 
 # ---[ Linter target
 add_custom_target(lint COMMAND ${CMAKE_COMMAND} -P ${PROJECT_SOURCE_DIR}/cmake/lint.cmake)

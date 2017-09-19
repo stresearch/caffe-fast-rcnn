@@ -231,12 +231,25 @@ endfunction()
 ###  Non macro section
 ################################################################################################
 
-find_package(CUDA 5.5 QUIET)
-find_cuda_helper_libs(curand)  # cmake 2.8.7 compartibility which doesn't search for curand
+message("FIND_CUDA_VERSION=${FIND_CUDA_VERSION}")
+if(FIND_CUDA_VERSION)
+  message("Looking for CUDA ${FIND_CUDA_VERSION}")
+  set(ENV{CUDA_BIN_PATH} /usr/local/cuda-${FIND_CUDA_VERSION}/bin)
+  find_package(CUDA ${FIND_CUDA_VERSION} QUIET)
+else(FIND_CUDA_VERSION)
+  find_package(CUDA 5.5 QUIET)
+endif(FIND_CUDA_VERSION)
+
+# taa: do we still need this??
+# find_cuda_helper_libs(curand)  # cmake 2.8.7 compartibility which doesn't search for curand
 
 if(NOT CUDA_FOUND)
   return()
 endif()
+message("CUDA_VERSION_STRING ${CUDA_VERSION_STRING}")
+message("CUDA_TOOLKIT_ROOT_DIR ${CUDA_TOOLKIT_ROOT_DIR}")
+message("CUDA_INCLUDE_DIRS ${CUDA_INCLUDE_DIRS}")
+message("CUDA_LIBRARIES ${CUDA_LIBRARIES}")
 
 set(HAVE_CUDA TRUE)
 message(STATUS "CUDA detected: " ${CUDA_VERSION})

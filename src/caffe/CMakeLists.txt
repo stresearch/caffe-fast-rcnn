@@ -23,10 +23,12 @@ endif()
 add_library(caffe ${srcs})
 caffe_default_properties(caffe)
 target_link_libraries(caffe ${Caffe_LINKER_LIBS})
+message(STATUS "Caffe_INCLUDE_DIRS=${Caffe_INCLUDE_DIRS}")
 target_include_directories(caffe ${Caffe_INCLUDE_DIRS}
                                  PUBLIC
                                  $<BUILD_INTERFACE:${Caffe_INCLUDE_DIR}>
                                  $<INSTALL_INTERFACE:include>)
+target_include_directories(caffe BEFORE PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_compile_definitions(caffe ${Caffe_DEFINITIONS})
 if(Caffe_COMPILE_OPTIONS)
   target_compile_options(caffe ${Caffe_COMPILE_OPTIONS})

@@ -94,10 +94,21 @@ endif()
 
 # ---[ OpenCV
 if(USE_OPENCV)
-  find_package(OpenCV QUIET COMPONENTS core highgui imgproc imgcodecs)
-  if(NOT OpenCV_FOUND) # if not OpenCV 3.x, then imgcodecs are not found
-    find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc)
+  # Ugly, but... What this does is look in the user-supplied janus-tne location for OpenCV, then
+  # fall back on the system if that wasn't defined, or if OpenCV wasn't found there.
+  if (JANUS_OPENCV_PATH)
+    message(STATUS "-- Searching ${JANUS_OPENCV_PATH} for OpenCV")
+    find_package(OpenCV  COMPONENTS core highgui imgproc imgcodecs HINTS ${JANUS_OPENCV_PATH} ${JANUS_OPENCV_PATH}/share/OpenCV)
+    if(NOT OpenCV_FOUND) # if not OpenCV 3.x, then imgcodecs are not found
+      find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc HINTS ${JANUS_OPENCV_PATH} ${JANUS_OPENCV_PATH}/share/OpenCV)
+    endif()
   endif()
+  if(NOT OpenCV_FOUND)
+    find_package(OpenCV  COMPONENTS core highgui imgproc imgcodecs)
+    if(NOT OpenCV_FOUND) # if not OpenCV 3.x, then imgcodecs are not found
+      find_package(OpenCV REQUIRED COMPONENTS core highgui imgproc)
+    endif()
+  endif(NOT OpenCV_FOUND)
   list(APPEND Caffe_INCLUDE_DIRS PUBLIC ${OpenCV_INCLUDE_DIRS})
   list(APPEND Caffe_LINKER_LIBS PUBLIC ${OpenCV_LIBS})
   message(STATUS "OpenCV found (${OpenCV_CONFIG_PATH})")

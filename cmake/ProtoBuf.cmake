@@ -1,7 +1,14 @@
 # Finds Google Protocol Buffers library and compilers and extends
 # the standard cmake script with version and python generation support
 
-find_package( Protobuf REQUIRED )
+# taa: Give us a shot at overriding the system location for protobuf.
+if(PROTOBUF_ROOT)
+  message("Using ${PROTOBUF_ROOT}")
+  find_package( protobuf REQUIRED PATHS ${PROTOBUF_ROOT})
+else(PROTOBUF_ROOT)
+  find_package( Protobuf REQUIRED)
+endif(PROTOBUF_ROOT)
+
 list(APPEND Caffe_INCLUDE_DIRS PUBLIC ${PROTOBUF_INCLUDE_DIR})
 list(APPEND Caffe_LINKER_LIBS PUBLIC ${PROTOBUF_LIBRARIES})
 
