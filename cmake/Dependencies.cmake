@@ -115,6 +115,8 @@ if(USE_OPENCV)
   list(APPEND Caffe_DEFINITIONS PUBLIC -DUSE_OPENCV)
 endif()
 
+message("Caffe_INCLUDE_DIRS=${Caffe_INCLUDE_DIRS}")
+
 # ---[ BLAS
 if(NOT APPLE)
   set(BLAS "Atlas" CACHE STRING "Selected BLAS library")

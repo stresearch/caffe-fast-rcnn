@@ -126,7 +126,8 @@ bool ReadImageToDatum(const string& filename, const int label,
           matchExt(filename, encoding) )
         return ReadFileToDatum(filename, label, datum);
       std::vector<uchar> buf;
-      cv::imencode("."+encoding, cv_img, buf);
+      std::string realEncoding("." + encoding);
+      cv::imencode(realEncoding, cv_img, buf);
       datum->set_data(std::string(reinterpret_cast<char*>(&buf[0]),
                       buf.size()));
       datum->set_label(label);
